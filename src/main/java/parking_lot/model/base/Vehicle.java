@@ -1,4 +1,4 @@
-package parking_lot.model;
+package parking_lot.model.base;
 
 import parking_lot.enums.VehicleType;
 
