@@ -123,7 +123,11 @@ public class ParkingLotServiceImpl implements ParkingLotService {
 
     @Override
     public Response getParkedSpotIdForRegistrationNumber(String registrationNumber) throws ParkingLotException {
-        return null;
+        verifyParkingSpotsCreated();
+        Spot spot = getParkingSpotForRegistrationNumber(registrationNumber);
+        if (Objects.isNull(spot))
+            throw new ParkingLotException(ResponseStatus.NOT_FOUND, Constant.VEHICLE_NOT_FOUND);
+        return new Response(ResponseStatus.OK, String.valueOf(spot.getSpotId()));
     }
 
     @Override

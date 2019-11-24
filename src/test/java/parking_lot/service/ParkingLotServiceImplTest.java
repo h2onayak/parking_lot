@@ -241,4 +241,51 @@ class ParkingLotServiceImplTest {
             assertDoesNotThrow(()->parkingLotService.getRegistrationNumbersForColor(vehicle.getColor()));
         }
     }
+
+    @DisplayName("Parked spot id on registration number when")
+    @Nested
+    class ParkedSpotIdOnRegistrationNumberTests {
+        ParkingLotService parkingLotService;
+
+        @BeforeEach
+        void setUp() {
+            parkingLotService = spy(ParkingLotService.getInstance());
+        }
+
+        @DisplayName("no spots created")
+        @Test
+        void testGetSpotIdOfRegistrationNumberWhenNoSpotsCreated() {
+            assertDoesNotThrow(()->parkingLotService.createParkingLot(3));
+            when(parkingLotService.getParkingLotSize()).thenReturn(0);
+            assertThrows(ParkingLotException.class,()->parkingLotService.getParkedSpotIdForRegistrationNumber("REG01"));
+        }
+
+        @DisplayName("all spots are empty")
+        @Test
+        void testGetSpotIdOfRegistrationNumberWhenSpotsAreEmpty() {
+            assertDoesNotThrow(()->parkingLotService.createParkingLot(3));
+            assertThrows(ParkingLotException.class,()->parkingLotService
+                    .getParkedSpotIdForRegistrationNumber("REG02"));
+        }
+
+        @DisplayName("no registration number match found")
+        @Test
+        void testGetSpotIdOfRegistrationNumberWhenNoRegistrationMatch() {
+            Vehicle vehicle = spy(new Car("REG02","Blue"));
+            assertDoesNotThrow(()->parkingLotService.createParkingLot(4));
+            assertDoesNotThrow(()->parkingLotService.park(vehicle));
+            assertThrows(ParkingLotException.class,()->parkingLotService
+                    .getParkedSpotIdForRegistrationNumber("REG05"));
+        }
+
+        @DisplayName("correct registration number match found")
+        @Test
+        void testGetSpotIdOfRegistrationNumberWhenRegistrationMatched() {
+            Vehicle vehicle = spy(new Car("REG02","Blue"));
+            assertDoesNotThrow(()->parkingLotService.createParkingLot(4));
+            assertDoesNotThrow(()->parkingLotService.park(vehicle));
+            assertDoesNotThrow(()->parkingLotService
+                    .getParkedSpotIdForRegistrationNumber(vehicle.getRegistrationNumber()));
+        }
+    }
 }
