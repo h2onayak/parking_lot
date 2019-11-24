@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.PriorityQueue;
 
+import static parking_lot.constants.Constant.PARKING_SPOT_NOT_EXIST;
+
 public class ParkingLotServiceImpl implements ParkingLotService {
 
     private static ParkingLotServiceImpl parkingLotServiceInstance = null;
@@ -79,7 +81,13 @@ public class ParkingLotServiceImpl implements ParkingLotService {
 
     @Override
     public Response exit(int spotNumber) throws ParkingLotException {
-        return null;
+        verifyParkingSpotsCreated();
+        Spot spot = parkingSpotsMap.get(spotNumber);
+        if (Objects.isNull(spot))
+            throw new ParkingLotException(ResponseStatus.NOT_FOUND, PARKING_SPOT_NOT_EXIST);
+        spot.removeVehicle(spotNumber);
+        setSpotFreeToPark(spot.getSpotId());
+        return new Response(ResponseStatus.OK, String.format(Constant.LEAVE_SLOT_MESSAGE, spot.getSpotId()));
     }
 
     @Override
@@ -113,6 +121,10 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     private boolean isDuplicateRegistrationPark(String registrationNumber) {
         Spot spot = getParkingSpotForRegistrationNumber(registrationNumber);
         return Objects.nonNull(spot);
+    }
+
+    private void setSpotFreeToPark(int spotId) {
+        availableSpots.offer(spotId);
     }
 
     private void verifyParkingSpotsCreated() throws ParkingLotException {

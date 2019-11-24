@@ -13,4 +13,5 @@ public class Constant {
     public static final String PARKING_IS_FULL = "Sorry, parking lot is full";
     public static final String DUPLICATE_REGISTRATION_NUMBER = "Sorry, registration number is duplicate";
     public static final String ALLOCATED_SLOT_MESSAGE = "Allocated slot number: %s";
+    public static final String LEAVE_SLOT_MESSAGE = "Spot number %s is free";
 }

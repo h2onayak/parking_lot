@@ -10,8 +10,7 @@ import parking_lot.model.Car;
 import parking_lot.model.base.Vehicle;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class ParkingLotServiceImplTest {
 
@@ -110,6 +109,46 @@ class ParkingLotServiceImplTest {
             Vehicle vehicle = spy(new Car("KA 104", "white"));
             assertDoesNotThrow(() -> parkingLotService.createParkingLot(1));
             assertDoesNotThrow(() -> parkingLotService.park(vehicle));
+        }
+    }
+
+    @DisplayName("Exit vehicle when")
+    @Nested
+    class ExitVehicleTests {
+        ParkingLotService parkingLotService;
+
+        @BeforeEach
+        void setUp() {
+            parkingLotService = spy(ParkingLotService.getInstance());
+        }
+
+        @DisplayName("no parking spots created")
+        @Test
+        void testExitWhenNoSpotsCreated() {
+            assertThrows(ParkingLotException.class, () -> parkingLotService.exit(1));
+        }
+
+        @DisplayName("spot id does not exist")
+        @Test
+        void testWhenParkingSpotIdNotExist() {
+            assertDoesNotThrow(() -> parkingLotService.createParkingLot(1));
+            assertThrows(ParkingLotException.class, () -> parkingLotService.exit(2));
+        }
+
+        @DisplayName("no vehicle was parked on spot id")
+        @Test
+        void testWhenNoVehicleParkedOnSpotId() {
+            assertDoesNotThrow(() -> parkingLotService.createParkingLot(1));
+            assertThrows(ParkingLotException.class, () -> parkingLotService.exit(1));
+        }
+
+        @DisplayName("spot id is correct")
+        @Test
+        void testWhenThereIsCorrectSpotIdGiven() {
+            Vehicle vehicle = spy(new Car("KA 104", "white"));
+            assertDoesNotThrow(() -> parkingLotService.createParkingLot(2));
+            assertDoesNotThrow(() -> parkingLotService.park(vehicle));
+            assertDoesNotThrow(() -> parkingLotService.exit(1));
         }
     }
 }
