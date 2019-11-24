@@ -8,4 +8,5 @@ public class Constant {
     public static final String INVALID_COMMAND = "Invalid command";
     public static final String INVALID_INPUT = "Invalid input";
     public static final String SLOT_CREATED_MESSAGE = "Created a parking lot with %s slots";
+    public static final String PARKING_LOT_EXIST = "Parking lot already exist";
 }

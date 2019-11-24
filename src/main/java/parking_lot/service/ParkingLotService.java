@@ -9,6 +9,8 @@ public interface ParkingLotService {
     static ParkingLotService getInstance() {
         return ParkingLotServiceImpl.getParkingLotServiceInstance();
     }
+    //Only for testing purpose
+    int getParkingLotSize();
 
     Response createParkingLot(int numberOfSpots) throws ParkingLotException;
 
