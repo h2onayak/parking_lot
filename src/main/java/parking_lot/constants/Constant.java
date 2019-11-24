@@ -6,5 +6,6 @@ public class Constant {
     public static final String PARKING_SPOT_NOT_EXIST = "Parking spot is not exist!";
     public static final String VEHICLE_NOT_FOUND = "Not found";
     public static final String INVALID_COMMAND = "Invalid command";
-
+    public static final String INVALID_INPUT = "Invalid input";
+    public static final String SLOT_CREATED_MESSAGE = "Created a parking lot with %s slots";
 }

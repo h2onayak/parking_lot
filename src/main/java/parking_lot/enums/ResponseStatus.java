@@ -2,7 +2,9 @@ package parking_lot.enums;
 
 public enum ResponseStatus {
     BAD_REQUEST(400, "Bad Request"),
-    NOT_FOUND(404, "Not Found");
+    NOT_FOUND(404, "Not Found"),
+    CREATED(201, "Created"),
+    NOT_ACCEPTABLE(406, "Not Acceptable");
 
     private int statusCode;
     private String message;
