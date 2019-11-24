@@ -8,10 +8,8 @@ import parking_lot.model.base.Spot;
 import parking_lot.model.base.Vehicle;
 import parking_lot.response.Response;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.PriorityQueue;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static parking_lot.constants.Constant.PARKING_SPOT_NOT_EXIST;
 
@@ -92,7 +90,22 @@ public class ParkingLotServiceImpl implements ParkingLotService {
 
     @Override
     public Response getParkingLotStatus() throws ParkingLotException {
-        return null;
+        verifyParkingSpotsCreated();
+        Set<Spot> spots = parkingSpotsMap.values()
+                .stream()
+                .filter(Spot::isOccupied)
+                .sorted(Comparator.comparingInt(Spot::getSpotId))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        if (spots.isEmpty())
+            throw new ParkingLotException(ResponseStatus.NOT_FOUND, Constant.NO_VEHICLE_STATUS);
+        StringBuilder br = new StringBuilder();
+        br.append(Constant.STATUS_TEMPLATE);
+        for (Spot spot : spots) {
+            if (Objects.nonNull(spot.getVehicle())) {
+                br.append("\n").append(spot.getSpotId()).append("\t\t").append(spot.getVehicle().getRegistrationNumber()).append("\t\t").append(spot.getVehicle().getColor());
+            }
+        }
+        return new Response(ResponseStatus.OK, br.toString());
     }
 
     @Override

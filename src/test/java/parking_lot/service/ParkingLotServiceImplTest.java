@@ -151,4 +151,50 @@ class ParkingLotServiceImplTest {
             assertDoesNotThrow(() -> parkingLotService.exit(1));
         }
     }
+
+    @DisplayName("Parking lot status when")
+    @Nested
+    class ParkingLotStatusTests {
+        ParkingLotService parkingLotService;
+
+        @BeforeEach
+        void setUp() {
+            parkingLotService = spy(ParkingLotService.getInstance());
+        }
+
+        @DisplayName("no spots are created")
+        @Test
+        void testParkingLotStatusWhenNoSpotsCreated() {
+            assertDoesNotThrow(()->parkingLotService.createParkingLot(3));
+            when(parkingLotService.getParkingLotSize()).thenReturn(0);
+            assertThrows(ParkingLotException.class,()->parkingLotService.getParkingLotStatus());
+        }
+
+        @DisplayName("spots are empty")
+        @Test
+        void testParkingLotStatusWhenSpotsAreEmpty(){
+            assertDoesNotThrow(()->parkingLotService.createParkingLot(3));
+            assertThrows(ParkingLotException.class,()->parkingLotService.getParkingLotStatus());
+        }
+
+        @DisplayName("few spots are parked")
+        @Test
+        void testParkingLotStatusWhenNotFullyParked() throws ParkingLotException {
+            Vehicle vehicle = spy(new Car("CAR05", "Red"));
+            assertDoesNotThrow(()->parkingLotService.createParkingLot(2));
+            assertDoesNotThrow(()->parkingLotService.park(vehicle));
+            assertDoesNotThrow(()->parkingLotService.getParkingLotStatus());
+        }
+
+        @DisplayName("all spots are parked")
+        @Test
+        void testParkingLotStatusWhenFullyParked() {
+            Vehicle vehicle1 = spy(new Car("CAR11", "White"));
+            Vehicle vehicle2 = spy(new Car("CAR12", "Black"));
+            assertDoesNotThrow(()->parkingLotService.createParkingLot(2));
+            assertDoesNotThrow(()->parkingLotService.park(vehicle1));
+            assertDoesNotThrow(()->parkingLotService.park(vehicle2));
+            assertDoesNotThrow(()->parkingLotService.getParkingLotStatus());
+        }
+    }
 }

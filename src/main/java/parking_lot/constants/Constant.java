@@ -14,4 +14,6 @@ public class Constant {
     public static final String DUPLICATE_REGISTRATION_NUMBER = "Sorry, registration number is duplicate";
     public static final String ALLOCATED_SLOT_MESSAGE = "Allocated slot number: %s";
     public static final String LEAVE_SLOT_MESSAGE = "Spot number %s is free";
+    public static final String NO_VEHICLE_STATUS = "No vehicle parked!";
+    public static final String STATUS_TEMPLATE = "Spot No" + "\t" + "Registration No." + "\t" + "Colour";
 }
