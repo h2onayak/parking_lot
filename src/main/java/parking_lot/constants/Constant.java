@@ -9,4 +9,8 @@ public class Constant {
     public static final String INVALID_INPUT = "Invalid input";
     public static final String SLOT_CREATED_MESSAGE = "Created a parking lot with %s slots";
     public static final String PARKING_LOT_EXIST = "Parking lot already exist";
+    public static final String NO_PARKING_SPOTS_CREATED = "No spots parking spots created";
+    public static final String PARKING_IS_FULL = "Sorry, parking lot is full";
+    public static final String DUPLICATE_REGISTRATION_NUMBER = "Sorry, registration number is duplicate";
+    public static final String ALLOCATED_SLOT_MESSAGE = "Allocated slot number: %s";
 }

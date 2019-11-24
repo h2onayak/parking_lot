@@ -10,6 +10,7 @@ import parking_lot.response.Response;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.PriorityQueue;
 
 public class ParkingLotServiceImpl implements ParkingLotService {
@@ -42,7 +43,7 @@ public class ParkingLotServiceImpl implements ParkingLotService {
 
     @Override
     public Response createParkingLot(int numberOfSpots) throws ParkingLotException {
-        if(getParkingLotSize() > 0)
+        if (getParkingLotSize() > 0)
             throw new ParkingLotException(Constant.PARKING_LOT_EXIST);
         if (numberOfSpots <= 0)
             throw new ParkingLotException(Constant.INVALID_INPUT);
@@ -63,7 +64,17 @@ public class ParkingLotServiceImpl implements ParkingLotService {
 
     @Override
     public Response park(Vehicle vehicle) throws ParkingLotException {
-        return null;
+        verifyParkingSpotsCreated();
+        if (vehicle == null)
+            throw new ParkingLotException(Constant.INVALID_INPUT);
+        Integer spotId = getFreeSpotToPark();
+        if (Objects.isNull(spotId))
+            throw new ParkingLotException(Constant.PARKING_IS_FULL);
+        if (isDuplicateRegistrationPark(vehicle.getRegistrationNumber()))
+            throw new ParkingLotException(Constant.DUPLICATE_REGISTRATION_NUMBER);
+        Spot spot = parkingSpotsMap.get(spotId);
+        spot.assignVehicle(vehicle);
+        return new Response(ResponseStatus.OK, String.format(Constant.ALLOCATED_SLOT_MESSAGE, spotId));
     }
 
     @Override
@@ -89,5 +100,27 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     @Override
     public Response getParkedSpotIdsForColorOfVehicle(String color) throws ParkingLotException {
         return null;
+    }
+
+    private Spot getParkingSpotForRegistrationNumber(String registrationNumber) {
+        return parkingSpotsMap.values()
+                .stream()
+                .filter(spot -> spot.isOccupied() && spot.getVehicle().getRegistrationNumber().equalsIgnoreCase(registrationNumber))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private boolean isDuplicateRegistrationPark(String registrationNumber) {
+        Spot spot = getParkingSpotForRegistrationNumber(registrationNumber);
+        return Objects.nonNull(spot);
+    }
+
+    private void verifyParkingSpotsCreated() throws ParkingLotException {
+        if (parkingSpotsMap == null || getParkingLotSize() <= 0)
+            throw new ParkingLotException(ResponseStatus.NOT_FOUND, Constant.NO_PARKING_SPOTS_CREATED);
+    }
+
+    private Integer getFreeSpotToPark() {
+        return availableSpots != null ? availableSpots.poll() : null;
     }
 }

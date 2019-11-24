@@ -4,10 +4,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import parking_lot.enums.VehicleType;
 import parking_lot.exception.ParkingLotException;
+import parking_lot.model.Car;
+import parking_lot.model.base.Vehicle;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 class ParkingLotServiceImplTest {
 
@@ -37,15 +41,75 @@ class ParkingLotServiceImplTest {
         @Test
         void testPositiveParkingLotSize() throws ParkingLotException {
             int numberOfSpots = 5;
-            assertDoesNotThrow(()->parkingLotService.createParkingLot(5));
+            assertDoesNotThrow(() -> parkingLotService.createParkingLot(5));
             assertEquals(numberOfSpots, parkingLotService.getParkingLotSize());
         }
 
         @DisplayName("parking spots are already exist")
         @Test
-        void testWhenSpotsAreAlreadyCreated(){
+        void testWhenSpotsAreAlreadyCreated() {
             when(parkingLotService.getParkingLotSize()).thenReturn(1);
-            assertThrows(ParkingLotException.class,()->parkingLotService.createParkingLot(2));
+            assertThrows(ParkingLotException.class, () -> parkingLotService.createParkingLot(2));
+        }
+    }
+
+    @DisplayName("Park vehicle when")
+    @Nested
+    class ParkVehicleTests {
+        ParkingLotService parkingLotService;
+
+        @BeforeEach
+        void setUp() {
+            parkingLotService = spy(ParkingLotService.getInstance());
+        }
+
+        @DisplayName("no parking spots created")
+        @Test
+        void testParkingVehicleWhenNoSpotsCreated() {
+            Vehicle vehicle = spy(new Car("KA 102", "white"));
+            when(parkingLotService.getParkingLotSize()).thenReturn(0);
+            assertThrows(ParkingLotException.class, () -> parkingLotService.park(vehicle));
+        }
+
+        @DisplayName("parking vehicle null")
+        @Test
+        void testParkingVehicleIsNull() {
+            assertThrows(ParkingLotException.class, () -> parkingLotService.park(null));
+        }
+
+        @DisplayName("mismatch in the vehicle type")
+        @Test
+        void testParkingVehicleTypeNotMatching() {
+            Vehicle vehicle = spy(new Car("KA 102", "white"));
+            when(vehicle.getVehicleType()).thenReturn(VehicleType.BIKE);
+            assertThrows(ParkingLotException.class, () -> parkingLotService.park(vehicle));
+        }
+
+        @DisplayName("parking duplicate registration number")
+        @Test
+        void testWhenSameVehicleRegistrationNumberIsAlreadyParked() {
+            Vehicle vehicle = spy(new Car("KA 102", "white"));
+            assertDoesNotThrow(() -> parkingLotService.createParkingLot(2));
+            assertDoesNotThrow(() -> parkingLotService.park(vehicle));
+            assertThrows(ParkingLotException.class, () -> parkingLotService.park(vehicle));
+        }
+
+        @DisplayName("parking is full")
+        @Test
+        void testWhenParkingIsFull() {
+            Vehicle vehicle1 = spy(new Car("KA 102", "white"));
+            Vehicle vehicle2 = spy(new Car("KA 103", "Black"));
+            assertDoesNotThrow(() -> parkingLotService.createParkingLot(1));
+            assertDoesNotThrow(() -> parkingLotService.park(vehicle1));
+            assertThrows(ParkingLotException.class, () -> parkingLotService.park(vehicle2));
+        }
+
+        @DisplayName("parking space is present and vehicle is valid")
+        @Test
+        void testWhenParkingExistAndVehicleIsValid() {
+            Vehicle vehicle = spy(new Car("KA 104", "white"));
+            assertDoesNotThrow(() -> parkingLotService.createParkingLot(1));
+            assertDoesNotThrow(() -> parkingLotService.park(vehicle));
         }
     }
 }
