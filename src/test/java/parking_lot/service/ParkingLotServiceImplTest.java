@@ -288,4 +288,50 @@ class ParkingLotServiceImplTest {
                     .getParkedSpotIdForRegistrationNumber(vehicle.getRegistrationNumber()));
         }
     }
+
+    @DisplayName("Parked spots id's on colour match when")
+    @Nested
+    class ParkedSpotIdsOnColourMatchTests {
+        ParkingLotService parkingLotService;
+
+        @BeforeEach
+        void setUp() {
+            parkingLotService = spy(ParkingLotService.getInstance());
+        }
+
+        @DisplayName("no spots created")
+        @Test
+        void testGetParkingSpotIdsForColorOfVehicleWhenNoSpotsCreated() {
+            assertDoesNotThrow(()->parkingLotService.createParkingLot(3));
+            when(parkingLotService.getParkingLotSize()).thenReturn(0);
+            assertThrows(ParkingLotException.class,()->parkingLotService.getParkedSpotIdsForColourOfVehicle("White"));
+        }
+
+        @DisplayName("all spots are empty")
+        @Test
+        void testGetParkingSpotIdsForColorOfVehicleWhenSpotsEmpty(){
+            assertDoesNotThrow(()->parkingLotService.createParkingLot(2));
+            assertThrows(ParkingLotException.class, ()->parkingLotService.getParkingLotStatus());
+            assertThrows(ParkingLotException.class,()->parkingLotService.getParkedSpotIdsForColourOfVehicle("Black"));
+        }
+
+        @DisplayName("no colour match found")
+        @Test
+        void testGetParkingSpotIdsForColorOfVehicleWhenMatchNotFound(){
+            Vehicle vehicle = spy(new Car("CAR99","Blue"));
+            assertDoesNotThrow(()->parkingLotService.createParkingLot(2));
+            assertDoesNotThrow(()->parkingLotService.park(vehicle));
+            assertDoesNotThrow(()->parkingLotService.getParkingLotStatus());
+            assertThrows(ParkingLotException.class,()->parkingLotService.getParkedSpotIdsForColourOfVehicle("Black"));
+        }
+        @DisplayName("correct colour match found")
+        @Test
+        void testGetParkingSpotIdsForColorOfVehicleWhenMatchFound(){
+            Vehicle vehicle = spy(new Car("CAR100","Brown"));
+            assertDoesNotThrow(()->parkingLotService.createParkingLot(2));
+            assertDoesNotThrow(()->parkingLotService.park(vehicle));
+            assertDoesNotThrow(()->parkingLotService.getParkingLotStatus());
+            assertDoesNotThrow(()->parkingLotService.getParkedSpotIdsForColourOfVehicle(vehicle.getColor()));
+        }
+    }
 }

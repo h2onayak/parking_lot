@@ -24,5 +24,5 @@ public interface ParkingLotService {
 
     Response getParkedSpotIdForRegistrationNumber(String registrationNumber) throws ParkingLotException;
 
-    Response getParkedSpotIdsForColorOfVehicle(String color) throws ParkingLotException;
+    Response getParkedSpotIdsForColourOfVehicle(String color) throws ParkingLotException;
 }
