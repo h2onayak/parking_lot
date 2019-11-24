@@ -1,10 +1,14 @@
 package parking_lot.service;
 
-import parking_lot.response.Response;
 import parking_lot.exception.ParkingLotException;
 import parking_lot.model.base.Vehicle;
+import parking_lot.response.Response;
 
 public interface ParkingLotService {
+
+    static ParkingLotService getInstance() {
+        return ParkingLotServiceImpl.getParkingLotServiceInstance();
+    }
 
     Response createParkingLot(int numberOfSpots) throws ParkingLotException;
 
