@@ -197,4 +197,48 @@ class ParkingLotServiceImplTest {
             assertDoesNotThrow(()->parkingLotService.getParkingLotStatus());
         }
     }
+
+    @DisplayName("Get registration numbers for mentioned color when")
+    @Nested
+    class RegistrationNumbersOnColourTests {
+        ParkingLotService parkingLotService;
+
+        @BeforeEach
+        void setUp() {
+            parkingLotService = spy(ParkingLotService.getInstance());
+        }
+
+        @DisplayName("no spots created")
+        @Test
+        void testGetRegistrationNumbersOnColorForNoSpotsCreated() {
+            assertDoesNotThrow(()->parkingLotService.createParkingLot(3));
+            when(parkingLotService.getParkingLotSize()).thenReturn(0);
+            assertThrows(ParkingLotException.class,()->parkingLotService.getRegistrationNumbersForColor("White"));
+        }
+
+        @DisplayName("all spots are empty")
+        @Test
+        void testGetRegistrationNumbersOnColorForEmptyLot() {
+            assertDoesNotThrow(()->parkingLotService.createParkingLot(3));
+            assertThrows(ParkingLotException.class,()->parkingLotService.getRegistrationNumbersForColor("Silver"));
+        }
+
+        @DisplayName("no colour match found")
+        @Test
+        void testGetRegistrationNumbersOnNoColorMatch() {
+            Vehicle vehicle = spy(new Car("KA01KA02","maroon"));
+            assertDoesNotThrow(()->parkingLotService.createParkingLot(3));
+            assertDoesNotThrow(()->parkingLotService.park(vehicle));
+            assertThrows(ParkingLotException.class,()->parkingLotService.getRegistrationNumbersForColor("Red"));
+        }
+
+        @DisplayName("correct color match found")
+        @Test
+        void testGetRegistrationNumbersOnColorMatch() {
+            Vehicle vehicle = spy(new Car("KA01KA03","Green"));
+            assertDoesNotThrow(()->parkingLotService.createParkingLot(3));
+            assertDoesNotThrow(()->parkingLotService.park(vehicle));
+            assertDoesNotThrow(()->parkingLotService.getRegistrationNumbersForColor(vehicle.getColor()));
+        }
+    }
 }

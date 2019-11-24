@@ -110,7 +110,15 @@ public class ParkingLotServiceImpl implements ParkingLotService {
 
     @Override
     public Response getRegistrationNumbersForColor(String color) throws ParkingLotException {
-        return null;
+        verifyParkingSpotsCreated();
+        Set<String> registrationNumbers = parkingSpotsMap.values()
+                .stream()
+                .filter(spot -> spot.isOccupied() && spot.getVehicle().getColor().equalsIgnoreCase(color))
+                .map(spot -> spot.getVehicle().getRegistrationNumber())
+                .collect(Collectors.toSet());
+        if (registrationNumbers.isEmpty())
+            throw new ParkingLotException(ResponseStatus.NOT_FOUND, Constant.NO_VEHICLE_PARKED_ON_COLOR);
+        return new Response(ResponseStatus.OK, registrationNumbers.toString().replace("[", "").replace("]", ""));
     }
 
     @Override

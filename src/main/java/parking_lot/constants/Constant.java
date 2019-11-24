@@ -16,4 +16,5 @@ public class Constant {
     public static final String LEAVE_SLOT_MESSAGE = "Spot number %s is free";
     public static final String NO_VEHICLE_STATUS = "No vehicle parked!";
     public static final String STATUS_TEMPLATE = "Spot No" + "\t" + "Registration No." + "\t" + "Colour";
+    public static final String NO_VEHICLE_PARKED_ON_COLOR = "No vehicle parked on given color";
 }
