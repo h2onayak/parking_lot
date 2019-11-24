@@ -1,16 +1,15 @@
 package parking_lot.model;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import parking_lot.enums.ParkingSpotStatusType;
 import parking_lot.enums.VehicleType;
 import parking_lot.exception.ParkingLotException;
+import parking_lot.model.base.ParkingSpot;
 import parking_lot.model.base.Spot;
 import parking_lot.model.base.Vehicle;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -52,5 +51,44 @@ class CarParkingSpotTest {
             spot.assignVehicle(vehicle);
             assertEquals(ParkingSpotStatusType.OCCUPIED, spot.getParkingSpotStatusType());
         }
+    }
+
+    //This are the tests for removeVehicle() only
+    @DisplayName("Remove vehicle when")
+    @Nested
+    class RemoveVehicleTests {
+
+        private ParkingSpot spot;
+
+        @BeforeEach
+        void beforeEach() {
+            spot = spy(new CarParkingSpot(5));
+        }
+
+        @DisplayName("spotId is incorrect")
+        @Test
+        void testWhenInCorrectSpotIdIsGiven() {
+
+            assertThrows(ParkingLotException.class, () -> spot.removeVehicle(1));
+        }
+
+        @DisplayName("spotId is correct")
+        @Test
+        void testWhenCorrectSpotIdIsGiven() throws ParkingLotException {
+            when(spot.isVehicleExistOnSlot(any(Vehicle.class))).thenReturn(true);
+
+            assertDoesNotThrow(() -> spot.removeVehicle(5));
+            spot.removeVehicle(5);
+            Assertions.assertEquals(ParkingSpotStatusType.EMPTY, spot.getParkingSpotStatusType());
+        }
+
+        @DisplayName("spotId is correct but vehicle does not exist on spot")
+        @Test
+        void testWhenCorrectSpotIdButVehicleDoesNotExist() {
+            when(spot.isVehicleExistOnSlot(any(Vehicle.class))).thenReturn(false);
+
+            assertThrows(ParkingLotException.class, () -> spot.removeVehicle(5));
+        }
+
     }
 }
