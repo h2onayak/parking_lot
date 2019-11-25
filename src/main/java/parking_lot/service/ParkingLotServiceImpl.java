@@ -16,7 +16,7 @@ import static parking_lot.constants.Constant.PARKING_SPOT_NOT_EXIST;
 public class ParkingLotServiceImpl implements ParkingLotService {
 
     private static ParkingLotServiceImpl parkingLotServiceInstance = null;
-    private static Object mutex = new Object();
+    private static final Object mutex = new Object();
     private int parkingLotSize;
     //To give spots from entry point of parking lot.
     private PriorityQueue<Integer> availableSpots;
