@@ -14,7 +14,7 @@ public class CommandFactory {
         try {
             switch (CommandEnum.valueOf(commandName.toUpperCase())) {
                 case CREATE_PARKING_LOT:
-                    return new ParkingLotCommand(parkingLotService, commandInputs);
+                    return new CreateParkingLotCommand(parkingLotService, commandInputs);
                 case PARK:
                     return new ParkCommand(parkingLotService, commandInputs);
                 case LEAVE:
