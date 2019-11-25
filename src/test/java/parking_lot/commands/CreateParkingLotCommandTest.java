@@ -10,8 +10,7 @@ import parking_lot.service.ParkingLotService;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 class CreateParkingLotCommandTest {
 
@@ -72,6 +71,15 @@ class CreateParkingLotCommandTest {
                     new String[]{CommandEnum.CREATE_PARKING_LOT.getName(), "6"}));
             assertDoesNotThrow(createParkingLotCommand::execute);
             verify(parkingLotService).createParkingLot(6);
+        }
+
+        @DisplayName("parking lot already exist")
+        @Test
+        void testCreateParkingCommandWhenAlreadyCreated(){
+            CreateParkingLotCommand createParkingLotCommand = spy(new CreateParkingLotCommand(parkingLotService,
+                    new String[]{CommandEnum.CREATE_PARKING_LOT.getName(), "6"}));
+            when(parkingLotService.getParkingLotSize()).thenReturn(2);
+            assertThrows(ParkingLotException.class,createParkingLotCommand::execute);
         }
     }
 }
