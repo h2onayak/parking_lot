@@ -9,6 +9,10 @@ public interface ParkingLotService {
     static ParkingLotService getInstance() {
         return ParkingLotServiceImpl.getParkingLotServiceInstance();
     }
+    //only for testing purpose to reset the
+    static void resetInstance(){
+        ParkingLotServiceImpl.resetInstance();
+    }
     //Only for testing purpose
     int getParkingLotSize();
 

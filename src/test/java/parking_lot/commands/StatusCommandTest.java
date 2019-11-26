@@ -1,10 +1,6 @@
 package parking_lot.commands;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import parking_lot.commands.StatusCommand;
+import org.junit.jupiter.api.*;
 import parking_lot.enums.CommandEnum;
 import parking_lot.exception.ParkingLotException;
 import parking_lot.model.Car;
@@ -25,8 +21,13 @@ class StatusCommandTest {
         @BeforeEach
         void setUp() {
             parkingLotService = spy(ParkingLotService.getInstance());
+            assertDoesNotThrow(()->parkingLotService.createParkingLot(3));
         }
-
+        @AfterEach
+        void tearDown(){
+            ParkingLotService.resetInstance();
+            parkingLotService = null;
+        }
         @DisplayName("spots not created")
         @Test
         void testStatusCommandWhenWhenSpotsNotCreated() {
@@ -42,7 +43,6 @@ class StatusCommandTest {
         void testStatusCommandWhenSpotsEmpty() {
             StatusCommand statusCommand = spy(new StatusCommand(parkingLotService,
                     new String[]{CommandEnum.STATUS.getName()}));
-            assertDoesNotThrow(()->parkingLotService.createParkingLot(3));
             assertThrows(ParkingLotException.class, statusCommand::execute);
         }
 
@@ -52,7 +52,6 @@ class StatusCommandTest {
             StatusCommand statusCommand = spy(new StatusCommand(parkingLotService,
                     new String[]{CommandEnum.STATUS.getName()}));
             Vehicle vehicle = spy(new Car("CAR99","White"));
-            assertDoesNotThrow(()->parkingLotService.createParkingLot(3));
             assertDoesNotThrow(()->parkingLotService.park(vehicle));
             assertDoesNotThrow(statusCommand::execute);
             verify(parkingLotService).getParkingLotStatus();

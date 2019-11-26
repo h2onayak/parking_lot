@@ -1,9 +1,6 @@
 package parking_lot.commands;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import parking_lot.enums.CommandEnum;
 import parking_lot.exception.ParkingLotException;
 import parking_lot.model.Car;
@@ -27,7 +24,11 @@ class LeaveCommandTest {
             parkingLotService = spy(ParkingLotService.getInstance());
             assertDoesNotThrow(() -> parkingLotService.createParkingLot(3));
         }
-
+        @AfterEach
+        void tearDown(){
+            ParkingLotService.resetInstance();
+            parkingLotService = null;
+        }
         @DisplayName("command inputs are not valid")
         @Test
         void testLeaveCommandWhenNotValidInputs() {

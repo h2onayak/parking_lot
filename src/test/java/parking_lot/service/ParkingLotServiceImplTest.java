@@ -1,9 +1,6 @@
 package parking_lot.service;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import parking_lot.enums.VehicleType;
 import parking_lot.exception.ParkingLotException;
 import parking_lot.model.Car;
@@ -14,40 +11,61 @@ import static org.mockito.Mockito.*;
 
 class ParkingLotServiceImplTest {
 
+//    static ParkingLotService parkingLotService;
+//    @BeforeAll
+//    static void setUp() {
+//        ParkingLotService.resetInstance();
+//        parkingLotService = spy(ParkingLotService.getInstance());
+//        assertDoesNotThrow(() -> parkingLotService.createParkingLot(5));
+//    }
+//
+//    @AfterAll
+//    static void resetUp(){
+//        ParkingLotService.resetInstance();
+//    }
+
     @DisplayName("Create parking spots when")
     @Nested
     class CreatingParkingLotTests {
         ParkingLotService parkingLotService;
-
         @BeforeEach
         void setUp() {
             parkingLotService = spy(ParkingLotService.getInstance());
         }
 
+        @AfterEach
+        void tearDown(){
+            ParkingLotService.resetInstance();
+            parkingLotService = null;
+
+        }
         @DisplayName("number of spots are zero")
         @Test
         void testZeroParkingLotSize() {
+            when(parkingLotService.getParkingLotSize()).thenReturn(0);
             assertThrows(ParkingLotException.class, () -> parkingLotService.createParkingLot(0));
         }
 
         @DisplayName("number of spots are negative")
         @Test
         void testNegativeParkingLotSize() {
+            when(parkingLotService.getParkingLotSize()).thenReturn(0);
             assertThrows(ParkingLotException.class, () -> parkingLotService.createParkingLot(-1));
         }
 
         @DisplayName("number of spots are positive")
         @Test
         void testPositiveParkingLotSize() throws ParkingLotException {
-            int numberOfSpots = 5;
-            assertDoesNotThrow(() -> parkingLotService.createParkingLot(5));
-            assertEquals(numberOfSpots, parkingLotService.getParkingLotSize());
+            int numberOfSpots = 3;
+            when(parkingLotService.getParkingLotSize()).thenReturn(0);
+            assertDoesNotThrow(() -> parkingLotService.createParkingLot(numberOfSpots));
+            verify(parkingLotService).createParkingLot(numberOfSpots);
         }
 
         @DisplayName("parking spots are already exist")
         @Test
         void testWhenSpotsAreAlreadyCreated() {
-            when(parkingLotService.getParkingLotSize()).thenReturn(1);
+            assertDoesNotThrow(() -> parkingLotService.createParkingLot(1));
             assertThrows(ParkingLotException.class, () -> parkingLotService.createParkingLot(2));
         }
     }
@@ -60,8 +78,14 @@ class ParkingLotServiceImplTest {
         @BeforeEach
         void setUp() {
             parkingLotService = spy(ParkingLotService.getInstance());
+            assertDoesNotThrow(()->parkingLotService.createParkingLot(2));
         }
+        @AfterEach
+        void tearDown(){
+            ParkingLotService.resetInstance();
+            parkingLotService = null;
 
+        }
         @DisplayName("no parking spots created")
         @Test
         void testParkingVehicleWhenNoSpotsCreated() {
@@ -88,7 +112,6 @@ class ParkingLotServiceImplTest {
         @Test
         void testWhenSameVehicleRegistrationNumberIsAlreadyParked() {
             Vehicle vehicle = spy(new Car("KA 102", "white"));
-            assertDoesNotThrow(() -> parkingLotService.createParkingLot(2));
             assertDoesNotThrow(() -> parkingLotService.park(vehicle));
             assertThrows(ParkingLotException.class, () -> parkingLotService.park(vehicle));
         }
@@ -98,16 +121,17 @@ class ParkingLotServiceImplTest {
         void testWhenParkingIsFull() {
             Vehicle vehicle1 = spy(new Car("KA 102", "white"));
             Vehicle vehicle2 = spy(new Car("KA 103", "Black"));
-            assertDoesNotThrow(() -> parkingLotService.createParkingLot(1));
+            Vehicle vehicle3 = spy(new Car("KA 104", "Red"));
             assertDoesNotThrow(() -> parkingLotService.park(vehicle1));
-            assertThrows(ParkingLotException.class, () -> parkingLotService.park(vehicle2));
+            assertDoesNotThrow(() -> parkingLotService.park(vehicle2));
+            when(parkingLotService.getParkingLotSize()).thenReturn(2);
+            assertThrows(ParkingLotException.class, () -> parkingLotService.park(vehicle3));
         }
 
         @DisplayName("parking space is present and vehicle is valid")
         @Test
         void testWhenParkingExistAndVehicleIsValid() {
             Vehicle vehicle = spy(new Car("KA 104", "white"));
-            assertDoesNotThrow(() -> parkingLotService.createParkingLot(1));
             assertDoesNotThrow(() -> parkingLotService.park(vehicle));
         }
     }
@@ -120,25 +144,32 @@ class ParkingLotServiceImplTest {
         @BeforeEach
         void setUp() {
             parkingLotService = spy(ParkingLotService.getInstance());
+            assertDoesNotThrow(() -> parkingLotService.createParkingLot(1));
+        }
+
+        @AfterEach
+        void tearDown(){
+            ParkingLotService.resetInstance();
+            parkingLotService = null;
+
         }
 
         @DisplayName("no parking spots created")
         @Test
         void testExitWhenNoSpotsCreated() {
+            when(parkingLotService.getParkingLotSize()).thenReturn(0);
             assertThrows(ParkingLotException.class, () -> parkingLotService.exit(1));
         }
 
         @DisplayName("spot id does not exist")
         @Test
         void testWhenParkingSpotIdNotExist() {
-            assertDoesNotThrow(() -> parkingLotService.createParkingLot(1));
             assertThrows(ParkingLotException.class, () -> parkingLotService.exit(2));
         }
 
         @DisplayName("no vehicle was parked on spot id")
         @Test
         void testWhenNoVehicleParkedOnSpotId() {
-            assertDoesNotThrow(() -> parkingLotService.createParkingLot(1));
             assertThrows(ParkingLotException.class, () -> parkingLotService.exit(1));
         }
 
@@ -146,7 +177,6 @@ class ParkingLotServiceImplTest {
         @Test
         void testWhenThereIsCorrectSpotIdGiven() {
             Vehicle vehicle = spy(new Car("KA 104", "white"));
-            assertDoesNotThrow(() -> parkingLotService.createParkingLot(2));
             assertDoesNotThrow(() -> parkingLotService.park(vehicle));
             assertDoesNotThrow(() -> parkingLotService.exit(1));
         }
@@ -160,12 +190,19 @@ class ParkingLotServiceImplTest {
         @BeforeEach
         void setUp() {
             parkingLotService = spy(ParkingLotService.getInstance());
+            assertDoesNotThrow(()->parkingLotService.createParkingLot(2));
+        }
+
+        @AfterEach
+        void tearDown(){
+            ParkingLotService.resetInstance();
+            parkingLotService = null;
+
         }
 
         @DisplayName("no spots are created")
         @Test
         void testParkingLotStatusWhenNoSpotsCreated() {
-            assertDoesNotThrow(()->parkingLotService.createParkingLot(3));
             when(parkingLotService.getParkingLotSize()).thenReturn(0);
             assertThrows(ParkingLotException.class,()->parkingLotService.getParkingLotStatus());
         }
@@ -173,7 +210,6 @@ class ParkingLotServiceImplTest {
         @DisplayName("spots are empty")
         @Test
         void testParkingLotStatusWhenSpotsAreEmpty(){
-            assertDoesNotThrow(()->parkingLotService.createParkingLot(3));
             assertThrows(ParkingLotException.class,()->parkingLotService.getParkingLotStatus());
         }
 
@@ -181,9 +217,9 @@ class ParkingLotServiceImplTest {
         @Test
         void testParkingLotStatusWhenNotFullyParked() throws ParkingLotException {
             Vehicle vehicle = spy(new Car("CAR05", "Red"));
-            assertDoesNotThrow(()->parkingLotService.createParkingLot(2));
             assertDoesNotThrow(()->parkingLotService.park(vehicle));
             assertDoesNotThrow(()->parkingLotService.getParkingLotStatus());
+            verify(parkingLotService).getParkingLotStatus();
         }
 
         @DisplayName("all spots are parked")
@@ -191,7 +227,6 @@ class ParkingLotServiceImplTest {
         void testParkingLotStatusWhenFullyParked() {
             Vehicle vehicle1 = spy(new Car("CAR11", "White"));
             Vehicle vehicle2 = spy(new Car("CAR12", "Black"));
-            assertDoesNotThrow(()->parkingLotService.createParkingLot(2));
             assertDoesNotThrow(()->parkingLotService.park(vehicle1));
             assertDoesNotThrow(()->parkingLotService.park(vehicle2));
             assertDoesNotThrow(()->parkingLotService.getParkingLotStatus());
@@ -206,12 +241,19 @@ class ParkingLotServiceImplTest {
         @BeforeEach
         void setUp() {
             parkingLotService = spy(ParkingLotService.getInstance());
+            assertDoesNotThrow(()->parkingLotService.createParkingLot(3));
+        }
+
+        @AfterEach
+        void tearDown(){
+            ParkingLotService.resetInstance();
+            parkingLotService = null;
+
         }
 
         @DisplayName("no spots created")
         @Test
         void testGetRegistrationNumbersOnColorForNoSpotsCreated() {
-            assertDoesNotThrow(()->parkingLotService.createParkingLot(3));
             when(parkingLotService.getParkingLotSize()).thenReturn(0);
             assertThrows(ParkingLotException.class,()->parkingLotService.getRegistrationNumbersForColor("White"));
         }
@@ -219,7 +261,6 @@ class ParkingLotServiceImplTest {
         @DisplayName("all spots are empty")
         @Test
         void testGetRegistrationNumbersOnColorForEmptyLot() {
-            assertDoesNotThrow(()->parkingLotService.createParkingLot(3));
             assertThrows(ParkingLotException.class,()->parkingLotService.getRegistrationNumbersForColor("Silver"));
         }
 
@@ -227,18 +268,17 @@ class ParkingLotServiceImplTest {
         @Test
         void testGetRegistrationNumbersOnNoColorMatch() {
             Vehicle vehicle = spy(new Car("KA01KA02","maroon"));
-            assertDoesNotThrow(()->parkingLotService.createParkingLot(3));
             assertDoesNotThrow(()->parkingLotService.park(vehicle));
             assertThrows(ParkingLotException.class,()->parkingLotService.getRegistrationNumbersForColor("Red"));
         }
 
         @DisplayName("correct color match found")
         @Test
-        void testGetRegistrationNumbersOnColorMatch() {
+        void testGetRegistrationNumbersOnColorMatch() throws ParkingLotException {
             Vehicle vehicle = spy(new Car("KA01KA03","Green"));
-            assertDoesNotThrow(()->parkingLotService.createParkingLot(3));
             assertDoesNotThrow(()->parkingLotService.park(vehicle));
             assertDoesNotThrow(()->parkingLotService.getRegistrationNumbersForColor(vehicle.getColor()));
+            verify(parkingLotService).getRegistrationNumbersForColor(vehicle.getColor());
         }
     }
 
@@ -250,12 +290,17 @@ class ParkingLotServiceImplTest {
         @BeforeEach
         void setUp() {
             parkingLotService = spy(ParkingLotService.getInstance());
+            assertDoesNotThrow(()->parkingLotService.createParkingLot(3));
         }
+        @AfterEach
+        void tearDown(){
+            ParkingLotService.resetInstance();
+            parkingLotService = null;
 
+        }
         @DisplayName("no spots created")
         @Test
         void testGetSpotIdOfRegistrationNumberWhenNoSpotsCreated() {
-            assertDoesNotThrow(()->parkingLotService.createParkingLot(3));
             when(parkingLotService.getParkingLotSize()).thenReturn(0);
             assertThrows(ParkingLotException.class,()->parkingLotService.getParkedSpotIdForRegistrationNumber("REG01"));
         }
@@ -263,7 +308,6 @@ class ParkingLotServiceImplTest {
         @DisplayName("all spots are empty")
         @Test
         void testGetSpotIdOfRegistrationNumberWhenSpotsAreEmpty() {
-            assertDoesNotThrow(()->parkingLotService.createParkingLot(3));
             assertThrows(ParkingLotException.class,()->parkingLotService
                     .getParkedSpotIdForRegistrationNumber("REG02"));
         }
@@ -272,7 +316,6 @@ class ParkingLotServiceImplTest {
         @Test
         void testGetSpotIdOfRegistrationNumberWhenNoRegistrationMatch() {
             Vehicle vehicle = spy(new Car("REG02","Blue"));
-            assertDoesNotThrow(()->parkingLotService.createParkingLot(4));
             assertDoesNotThrow(()->parkingLotService.park(vehicle));
             assertThrows(ParkingLotException.class,()->parkingLotService
                     .getParkedSpotIdForRegistrationNumber("REG05"));
@@ -282,7 +325,6 @@ class ParkingLotServiceImplTest {
         @Test
         void testGetSpotIdOfRegistrationNumberWhenRegistrationMatched() {
             Vehicle vehicle = spy(new Car("REG02","Blue"));
-            assertDoesNotThrow(()->parkingLotService.createParkingLot(4));
             assertDoesNotThrow(()->parkingLotService.park(vehicle));
             assertDoesNotThrow(()->parkingLotService
                     .getParkedSpotIdForRegistrationNumber(vehicle.getRegistrationNumber()));
@@ -296,13 +338,19 @@ class ParkingLotServiceImplTest {
 
         @BeforeEach
         void setUp() {
+            ParkingLotService.resetInstance();
             parkingLotService = spy(ParkingLotService.getInstance());
+            assertDoesNotThrow(()->parkingLotService.createParkingLot(2));
+        }
+        @AfterEach
+        void tearDown(){
+            ParkingLotService.resetInstance();
+            parkingLotService = null;
         }
 
         @DisplayName("no spots created")
         @Test
         void testGetParkingSpotIdsForColorOfVehicleWhenNoSpotsCreated() {
-            assertDoesNotThrow(()->parkingLotService.createParkingLot(3));
             when(parkingLotService.getParkingLotSize()).thenReturn(0);
             assertThrows(ParkingLotException.class,()->parkingLotService.getParkedSpotIdsForColourOfVehicle("White"));
         }
@@ -310,8 +358,6 @@ class ParkingLotServiceImplTest {
         @DisplayName("all spots are empty")
         @Test
         void testGetParkingSpotIdsForColorOfVehicleWhenSpotsEmpty(){
-            assertDoesNotThrow(()->parkingLotService.createParkingLot(2));
-            assertThrows(ParkingLotException.class, ()->parkingLotService.getParkingLotStatus());
             assertThrows(ParkingLotException.class,()->parkingLotService.getParkedSpotIdsForColourOfVehicle("Black"));
         }
 
@@ -319,19 +365,16 @@ class ParkingLotServiceImplTest {
         @Test
         void testGetParkingSpotIdsForColorOfVehicleWhenMatchNotFound(){
             Vehicle vehicle = spy(new Car("CAR99","Blue"));
-            assertDoesNotThrow(()->parkingLotService.createParkingLot(2));
             assertDoesNotThrow(()->parkingLotService.park(vehicle));
-            assertDoesNotThrow(()->parkingLotService.getParkingLotStatus());
             assertThrows(ParkingLotException.class,()->parkingLotService.getParkedSpotIdsForColourOfVehicle("Black"));
         }
         @DisplayName("correct colour match found")
         @Test
-        void testGetParkingSpotIdsForColorOfVehicleWhenMatchFound(){
+        void testGetParkingSpotIdsForColorOfVehicleWhenMatchFound() throws ParkingLotException {
             Vehicle vehicle = spy(new Car("CAR100","Brown"));
-            assertDoesNotThrow(()->parkingLotService.createParkingLot(2));
             assertDoesNotThrow(()->parkingLotService.park(vehicle));
-            assertDoesNotThrow(()->parkingLotService.getParkingLotStatus());
             assertDoesNotThrow(()->parkingLotService.getParkedSpotIdsForColourOfVehicle(vehicle.getColor()));
+            verify(parkingLotService).getParkedSpotIdsForColourOfVehicle(vehicle.getColor());
         }
     }
 }

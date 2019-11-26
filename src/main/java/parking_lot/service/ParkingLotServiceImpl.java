@@ -35,6 +35,10 @@ public class ParkingLotServiceImpl implements ParkingLotService {
         }
         return parkingLotServiceInstance;
     }
+    //only for testing purpose to reset the
+    static void resetInstance(){
+        parkingLotServiceInstance = null;
+    }
 
     @Override
     public int getParkingLotSize() {
