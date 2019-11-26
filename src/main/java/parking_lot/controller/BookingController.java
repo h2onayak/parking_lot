@@ -30,10 +30,10 @@ public abstract class BookingController implements Controller {
         try {
             Command command = CommandFactory.getCommand(parkingLotService, commandData);
             response = command.execute();
-            return response.getMessage();
         } catch (ParkingLotException e) {
             response = ParkingLotExceptionHandler.handleException(e);
+            return response.getResolution();
         }
-        return response.getResolution();
+        return response.getMessage();
     }
 }

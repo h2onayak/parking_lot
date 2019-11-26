@@ -1,6 +1,8 @@
 package parking_lot.controller;
 
 
+import java.util.Scanner;
+
 public class ManualInputBookingController extends BookingController {
     private final static Object mutex = new Object();
     private static ManualInputBookingController manualInputBookingController = null;
@@ -21,6 +23,14 @@ public class ManualInputBookingController extends BookingController {
 
     @Override
     public void fetchCommands() {
-        //TODO: Complete this
+        Scanner scanner = new Scanner(System.in);
+        String result;
+        while (true) {
+            String commandLine = scanner.nextLine();
+            result = processCommand(commandLine);
+            System.out.println(result);
+            if(result.equalsIgnoreCase("exit"))
+                return;
+        }
     }
 }

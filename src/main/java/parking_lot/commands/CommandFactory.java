@@ -27,6 +27,8 @@ public class CommandFactory {
                     return new SpotIdsForVehicleColourCommand(parkingLotService, commandInputs);
                 case SLOT_NUMBER_FOR_REGISTRATION_NUMBER:
                     return new SpotIdForRegistrationNumberCommand(parkingLotService, commandInputs);
+                case EXIT:
+                    return new ExitCommand(parkingLotService,commandInputs);
                 default:
                     throw new ParkingLotException(ResponseStatus.BAD_REQUEST, Constant.INVALID_COMMAND);
             }
