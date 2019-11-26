@@ -1,10 +1,8 @@
 package parking_lot.controller;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import parking_lot.constants.Constant;
+import parking_lot.service.ParkingLotService;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -18,6 +16,7 @@ class ManualInputBookingControllerTest {
 
         @BeforeEach
         void setUp() {
+            ParkingLotService.resetInstance();
             controller = spy(Controller.getInstance(""));
         }
 
