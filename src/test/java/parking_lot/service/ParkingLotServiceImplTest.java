@@ -11,19 +11,6 @@ import static org.mockito.Mockito.*;
 
 class ParkingLotServiceImplTest {
 
-//    static ParkingLotService parkingLotService;
-//    @BeforeAll
-//    static void setUp() {
-//        ParkingLotService.resetInstance();
-//        parkingLotService = spy(ParkingLotService.getInstance());
-//        assertDoesNotThrow(() -> parkingLotService.createParkingLot(5));
-//    }
-//
-//    @AfterAll
-//    static void resetUp(){
-//        ParkingLotService.resetInstance();
-//    }
-
     @DisplayName("Create parking spots when")
     @Nested
     class CreatingParkingLotTests {
