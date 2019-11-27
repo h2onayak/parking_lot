@@ -2,7 +2,7 @@ package parking_lot;
 
 import parking_lot.controller.Controller;
 
-public class Application {
+class Application {
     public static void main(String[] args) {
         run(args.length >= 1 ? args[0] : "");
     }

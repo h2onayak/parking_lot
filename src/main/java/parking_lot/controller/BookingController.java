@@ -12,7 +12,7 @@ import java.util.Objects;
 public abstract class BookingController implements Controller {
     private final ParkingLotService parkingLotService;
 
-    public BookingController() {
+    BookingController() {
         parkingLotService = ParkingLotService.getInstance();
     }
 

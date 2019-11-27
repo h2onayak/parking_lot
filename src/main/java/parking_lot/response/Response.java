@@ -2,13 +2,10 @@ package parking_lot.response;
 
 import parking_lot.enums.ResponseStatus;
 
-import java.time.LocalDateTime;
-
 public class Response {
-    private ResponseStatus responseStatus;
-    private String message;
-    private String resolution;
-    private LocalDateTime timestamp;
+    private final ResponseStatus responseStatus;
+    private final String message;
+    private final String resolution;
 
     public Response(ResponseStatus responseStatus) {
         this(responseStatus, null);
@@ -24,7 +21,6 @@ public class Response {
         this.responseStatus = responseStatus;
         this.resolution = resolution;
         this.message = message != null ? message : responseStatus.getMessage();
-        this.timestamp = LocalDateTime.now();
     }
 
     public ResponseStatus getResponseStatus() {
@@ -33,10 +29,6 @@ public class Response {
 
     public String getMessage() {
         return message;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
     }
 
     public String getResolution() {

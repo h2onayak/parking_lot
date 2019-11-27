@@ -68,7 +68,7 @@ class RegistrationNumbersForVehicleColourCommandTest {
 
         @DisplayName("valid command inputs and color match not found")
         @Test
-        void testRegistrationNumbersForVehicleColourCommandWhenMatchNotFound() throws ParkingLotException {
+        void testRegistrationNumbersForVehicleColourCommandWhenMatchNotFound() {
             RegistrationNumbersForVehicleColourCommand registrationNumbersForVehicleColourCommand =
                     spy(new RegistrationNumbersForVehicleColourCommand(parkingLotService,
                             new String[]{CommandEnum.REGISTRATION_NUMBERS_FOR_CARS_WITH_COLOUR.getName(), "Black"}));

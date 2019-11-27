@@ -8,7 +8,7 @@ import java.util.Objects;
 public class FileProcessBookingController extends BookingController {
     private final static Object mutex = new Object();
     private static FileProcessBookingController fileProcessBookingController = null;
-    private String fileName;
+    private final String fileName;
 
     private FileProcessBookingController(String fileName) {
         this.fileName = fileName;

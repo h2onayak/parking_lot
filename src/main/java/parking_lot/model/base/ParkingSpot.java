@@ -15,7 +15,7 @@ public abstract class ParkingSpot implements Spot {
     private ParkingSpotStatusType parkingSpotStatusType;
     private Vehicle vehicle;
 
-    public ParkingSpot(int spotId, VehicleType vehicleType) {
+    protected ParkingSpot(int spotId, VehicleType vehicleType) {
         this.spotId = spotId;
         this.vehicleType = vehicleType;
         setEmpty();

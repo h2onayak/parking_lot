@@ -7,10 +7,10 @@ import parking_lot.service.ParkingLotService;
 
 public abstract class Command {
     final ParkingLotService parkingLotService;
-    final CommandEnum commandName;
+    private final CommandEnum commandName;
     final String[] commandInputs;
 
-    public Command(ParkingLotService parkingLotService, CommandEnum commandName, String[] commandInputs) {
+    Command(ParkingLotService parkingLotService, CommandEnum commandName, String[] commandInputs) {
         this.parkingLotService = parkingLotService;
         this.commandName = commandName;
         this.commandInputs = commandInputs;

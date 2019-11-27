@@ -7,16 +7,12 @@ public enum ResponseStatus {
     NOT_ACCEPTABLE(406, "Not Acceptable"),
     OK(200, "OK");
 
-    private int statusCode;
-    private String message;
+    private final int statusCode;
+    private final String message;
 
     ResponseStatus(int _statusCode, String _message) {
         statusCode = _statusCode;
         message = _message;
-    }
-
-    public int getStatusCode() {
-        return statusCode;
     }
 
     public String getMessage() {
