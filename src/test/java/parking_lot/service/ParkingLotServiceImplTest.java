@@ -52,7 +52,7 @@ class ParkingLotServiceImplTest {
         @DisplayName("parking spots are already exist")
         @Test
         void testWhenSpotsAreAlreadyCreated() {
-            assertDoesNotThrow(() -> parkingLotService.createParkingLot(1));
+            when(parkingLotService.getParkingLotSize()).thenReturn(1);
             assertThrows(ParkingLotException.class, () -> parkingLotService.createParkingLot(2));
         }
     }
@@ -64,6 +64,7 @@ class ParkingLotServiceImplTest {
 
         @BeforeEach
         void setUp() {
+            ParkingLotService.resetInstance();
             parkingLotService = spy(ParkingLotService.getInstance());
             assertDoesNotThrow(()->parkingLotService.createParkingLot(2));
         }
@@ -130,6 +131,7 @@ class ParkingLotServiceImplTest {
 
         @BeforeEach
         void setUp() {
+            ParkingLotService.resetInstance();
             parkingLotService = spy(ParkingLotService.getInstance());
             assertDoesNotThrow(() -> parkingLotService.createParkingLot(1));
         }
@@ -176,6 +178,7 @@ class ParkingLotServiceImplTest {
 
         @BeforeEach
         void setUp() {
+            ParkingLotService.resetInstance();
             parkingLotService = spy(ParkingLotService.getInstance());
             assertDoesNotThrow(()->parkingLotService.createParkingLot(2));
         }
@@ -227,6 +230,7 @@ class ParkingLotServiceImplTest {
 
         @BeforeEach
         void setUp() {
+            ParkingLotService.resetInstance();
             parkingLotService = spy(ParkingLotService.getInstance());
             assertDoesNotThrow(()->parkingLotService.createParkingLot(3));
         }
@@ -276,6 +280,7 @@ class ParkingLotServiceImplTest {
 
         @BeforeEach
         void setUp() {
+            ParkingLotService.resetInstance();
             parkingLotService = spy(ParkingLotService.getInstance());
             assertDoesNotThrow(()->parkingLotService.createParkingLot(3));
         }

@@ -22,6 +22,7 @@ class SpotIdForRegistrationNumberCommandTest {
 
         @BeforeEach
         void setUp() {
+            ParkingLotService.resetInstance();
             parkingLotService = spy(ParkingLotService.getInstance());
             assertDoesNotThrow(() -> parkingLotService.createParkingLot(5));
         }

@@ -21,6 +21,7 @@ class SpotIdsForVehicleColourCommandTest {
 
         @BeforeEach
         void setUp() {
+            ParkingLotService.resetInstance();
             parkingLotService = spy(ParkingLotService.getInstance());
             assertDoesNotThrow(() -> parkingLotService.createParkingLot(4));
         }

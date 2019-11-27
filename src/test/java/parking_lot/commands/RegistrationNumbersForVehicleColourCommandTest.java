@@ -21,6 +21,7 @@ class RegistrationNumbersForVehicleColourCommandTest {
 
         @BeforeEach
         void setUp() {
+            ParkingLotService.resetInstance();
             parkingLotService = spy(ParkingLotService.getInstance());
             assertDoesNotThrow(() -> parkingLotService.createParkingLot(2));
         }
